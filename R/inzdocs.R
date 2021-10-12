@@ -67,14 +67,24 @@ dispatch.inzdocs <- function(state, action) {
 
     switch(action$action,
         'LOAD_DATA' = {
+            # load data into a database and return the DB path
+            # and perhaps a key of some kind ...
+            data <- do.call(
+                iNZightTools::smart_read,
+                action$payload
+            )
+            name <- tools::file_path_sans_ext(
+                basename(action$payload$file)
+            )
+            key <- paste(LETTERS[sample(20, replace = TRUE)], collapse = "")
+            dir <- file.path(tempdir(), key)
+            con <- duckdb::dbConnect(duckdb::duckdb(dir))
+            on.exit(duckdb::dbDisconnect(con, shutdown = TRUE))
+            duckdb::dbWriteTable(con, name, data)
+
             doc <- doc(
-                data = do.call(
-                    iNZightTools::smart_read,
-                    action$payload
-                ),
-                name = tools::file_path_sans_ext(
-                    basename(action$payload$file)
-                )
+                path = dir,
+                name = name
             )
             dispatch(
                 state,

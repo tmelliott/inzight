@@ -49,3 +49,10 @@ print.inzstate <- function(x, ...) {
 }
 
 dispatch <- function(state, action) UseMethod("dispatch", state)
+
+as_list <- function(x) {
+    if (!is.list(x)) return(x)
+    unclass(
+        lapply(x, as_list)
+    )
+}

@@ -1,6 +1,6 @@
 #' inzight document constructor
 #'
-#' @param data the dataset contained within the document
+#' @param path the location where the `duckdb` data is stored on the server
 #' @param name the name of the dataset as displayed to users
 #'
 #' @return an `inzdoc` object
@@ -9,11 +9,15 @@
 #' @md
 #' @examples
 #' doc(iris, name = "Iris Data")
-doc <- function(data, name = deparse(substitute(data))) {
+doc <- function(path, name = deparse(substitute(data))) {
+    con <- duckdb::dbConnect(duckdb::duckdb(path))
+    on.exit(duckdb::dbDisconnect(con, shutdown = TRUE))
+
     structure(
         list(
-            data = data,
-            name = name
+            path = path,
+            name = name,
+            colnames = duckdb::dbListFields(con, "Census%20at%20School-500")
         ),
         class = "inzdoc"
     )

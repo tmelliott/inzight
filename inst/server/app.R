@@ -1,0 +1,32 @@
+library(plumber)
+
+devtools::load_all()
+
+#* @apiTitle inzight state API
+
+#* Create a new inzight state instance
+#* @get /new
+function() {
+    as_list(inzight())
+}
+
+#* dispatch
+#* @param state the current application state
+#* @param action an action to perform on the state
+#* @post /dispatch
+function(state, action) {
+
+    print(state)
+    print(action)
+
+    # state <- jsonlite::fromJSON(state)
+    state <- inzstate(
+        d = docs(state$docs),
+        c = do.call(controls, state$controls)
+    )
+
+    # action <- jsonlite::fromJSON(action)
+    class(action) <- "inzaction"
+
+    as_list(inzight(state, action))
+}

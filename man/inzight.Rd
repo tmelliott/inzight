@@ -18,7 +18,10 @@ an \code{inzstate} object
 Reduces a state based on a given action.
 }
 \examples{
-state <- inzstate()
-action <- inzaction('LOAD_DATA', data = iris)
-dispatch(state, action)
+app <- inzight()
+tf <- tempfile("iris", fileext = ".csv")
+write.csv(iris, tf, row.names = FALSE, quote = FALSE)
+on.exit(unlink(tf))
+action <- inzaction('LOAD_DATA', file = tf)
+inzight(app, action)
 }

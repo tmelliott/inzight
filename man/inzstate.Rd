@@ -4,7 +4,7 @@
 \alias{inzstate}
 \title{inzight state generator}
 \usage{
-inzstate(d = docs(), active_doc = 0L, c = controls())
+inzstate(d = docs(), c = controls())
 }
 \arguments{
 \item{d}{an \code{inzdocs} object}
