@@ -32,10 +32,10 @@ cat state0.json
 # load some data
 cat << EOF > action.json
 {
-	"action": "LOAD_DATA",
-	"payload": {
-		"file": "https://www.stat.auckland.ac.nz/~wild/data/data_from_iNZight/Census%20at%20School-500.csv"
-	}
+  "action": "LOAD_DATA",
+  "payload": {
+    "file": "https://www.stat.auckland.ac.nz/~wild/data/data_from_iNZight/Census%20at%20School-500.csv"
+  }
 }
 EOF
 
