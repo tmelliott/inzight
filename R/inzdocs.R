@@ -9,7 +9,7 @@ docs <- function(...) {
     x <- list(...)
     if (length(x) == 0L)
         x <- structure(
-            list(NULL),
+            list(),
             class = "inzdocs",
             active = 0L
         )
@@ -38,7 +38,7 @@ c.inzdoc <- function(...) {
 
 #' @export
 print.inzdocs <- function(x, ...) {
-    if (length(x) == 1L && length(x[[1]]) == 0L) {
+    if (length(x) == 0L || length(x[[1]]) == 0L) {
         cat("empty inzight document list\n")
         return()
     }
