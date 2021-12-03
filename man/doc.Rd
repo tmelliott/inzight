@@ -4,10 +4,10 @@
 \alias{doc}
 \title{inzight document constructor}
 \usage{
-doc(data, name = deparse(substitute(data)))
+doc(path, name = deparse(substitute(data)))
 }
 \arguments{
-\item{data}{the dataset contained within the document}
+\item{path}{the location where the \code{duckdb} data is stored on the server}
 
 \item{name}{the name of the dataset as displayed to users}
 }
