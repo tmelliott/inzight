@@ -1,6 +1,5 @@
+library(inzight)
 library(plumber)
-
-devtools::load_all()
 
 #* @apiTitle inzight state API
 
