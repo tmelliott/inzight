@@ -79,6 +79,7 @@ dispatch.inzdocs <- function(state, action) {
             )
             key <- paste(LETTERS[sample(20, replace = TRUE)], collapse = "")
             dir <- file.path(tempdir(), key)
+            if (!dir.exists(dir)) dir.create(dir, recursive = TRUE)
             db_file <- file.path(dir, "data.sqlite")
             con <- RSQLite::dbConnect(RSQLite::SQLite(), db_file)
             on.exit(RSQLite::dbDisconnect(con))
