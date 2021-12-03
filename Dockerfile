@@ -8,6 +8,6 @@ ADD . /srv/inzight/
 WORKDIR /srv/inzight
 RUN Rscript -e 'remotes::install_local("/srv/inzight")'
 
-EXPOSE 80
+EXPOSE 4567
 
 CMD ["./inst/server/run.sh"]
