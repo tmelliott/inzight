@@ -7,7 +7,7 @@ The idea is for this package to provide a back-end that can easily be run on any
 Start running a 'plumber' instance:
 
 ```r
-plumber::pr('inst/server/app.R') %>% plumber::pr_run(port = 4567)
+plumber::pr('inst/server/app.R') |> plumber::pr_run(port = 4567)
 ```
 
 Next call the API for state management:

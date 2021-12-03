@@ -1,6 +1,6 @@
 #' inzight document constructor
 #'
-#' @param path the location where the `duckdb` data is stored on the server
+#' @param path the location of the `SQLite` database on the server
 #' @param name the name of the dataset as displayed to users
 #'
 #' @return an `inzdoc` object
@@ -10,14 +10,14 @@
 #' @examples
 #' doc(iris, name = "Iris Data")
 doc <- function(path, name = deparse(substitute(data))) {
-    con <- duckdb::dbConnect(duckdb::duckdb(path))
-    on.exit(duckdb::dbDisconnect(con, shutdown = TRUE))
+    con <- RSQLite::dbConnect(RSQLite::SQLite(), path)
+    on.exit(RSQLite::dbDisconnect(con))
 
     structure(
         list(
             path = path,
             name = name,
-            colnames = duckdb::dbListFields(con, "Census%20at%20School-500")
+            colnames = RSQLite::dbListFields(con, "Census%20at%20School-500")
         ),
         class = "inzdoc"
     )

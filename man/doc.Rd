@@ -7,7 +7,7 @@
 doc(path, name = deparse(substitute(data)))
 }
 \arguments{
-\item{path}{the location where the \code{duckdb} data is stored on the server}
+\item{path}{the location of the \code{SQLite} database on the server}
 
 \item{name}{the name of the dataset as displayed to users}
 }
