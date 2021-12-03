@@ -31,6 +31,7 @@ print.inzcontrols <- function(x, ...) {
     invisible()
 }
 
+#' @export
 dispatch.inzcontrols <- function(state, action) {
     switch(action$action,
         'SET_V1' = {

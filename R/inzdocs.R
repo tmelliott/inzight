@@ -56,6 +56,7 @@ print.inzdocs <- function(x, ...) {
     invisible()
 }
 
+#' @export
 dispatch.inzdocs <- function(state, action) {
     if (missing(state)) stop("Must supply a state")
     if (missing(action)) {

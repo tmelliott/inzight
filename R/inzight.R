@@ -48,8 +48,10 @@ print.inzstate <- function(x, ...) {
     print(x$controls)
 }
 
+#' @export
 dispatch <- function(state, action) UseMethod("dispatch", state)
 
+#' @export
 as_list <- function(x) {
     if (!is.list(x)) return(x)
     unclass(

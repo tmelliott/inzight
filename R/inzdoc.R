@@ -28,6 +28,7 @@ print.inzdoc <- function(x, ..., list_style = "- ") {
     cat(list_style, x$name, '\n', sep = "")
 }
 
+#' @export
 dispatch.inzdoc <- function(state, action) {
 
 }
