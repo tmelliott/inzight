@@ -12,12 +12,11 @@
 doc <- function(path, name = deparse(substitute(data))) {
     con <- RSQLite::dbConnect(RSQLite::SQLite(), path)
     on.exit(RSQLite::dbDisconnect(con))
-
     structure(
         list(
             path = path,
             name = name,
-            colnames = RSQLite::dbListFields(con, "Census%20at%20School-500")
+            colnames = RSQLite::dbListFields(con, name)
         ),
         class = "inzdoc"
     )
