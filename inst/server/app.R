@@ -3,6 +3,16 @@ library(plumber)
 
 #* @apiTitle inzight state API
 
+#* Get session info
+#* @get /info
+#* @serializer unboxedJSON
+function() {
+    list(
+        r_version = as.character(getRversion()),
+        inzight_version = as.character(packageVersion('inzight'))
+    )
+}
+
 #* Create a new inzight state instance
 #* @get /new
 function() {

@@ -6,7 +6,8 @@ RUN install.r remotes plumber RSQLite iNZightTools
 
 ADD . /srv/inzight/
 WORKDIR /srv/inzight
-RUN Rscript -e 'remotes::install_local("/srv/inzight")'
+RUN R CMD INSTALL .
+#RUN Rscript -e 'remotes::install_local("/srv/inzight")'
 
 EXPOSE 4567
 
