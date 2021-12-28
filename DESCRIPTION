@@ -17,4 +17,4 @@ RoxygenNote: 7.1.2
 Imports:
     iNZightTools,
     plumber,
-    RSQLite
+    mongolite

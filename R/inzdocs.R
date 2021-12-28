@@ -66,6 +66,10 @@ dispatch.inzdocs <- function(state, action) {
     if (!class(action) == "inzaction")
         stop("Must be an action created with inzaction()")
 
+    DB_USERNAME <- Sys.getenv('INZIGHT_MONOGODB_ADMINUSERNAME')
+    DB_PASSWORD <- Sys.getenv('INZIGHT_MONOGODB_ADMINPASSWORD')
+    DB_URL <- Sys.getenv('INZIGHT_MONGODB_URL')
+
     switch(action$action,
         'LOAD_DATA' = {
             # load data into a database and return the DB path
@@ -78,15 +82,13 @@ dispatch.inzdocs <- function(state, action) {
                 basename(action$payload$file)
             )
             key <- paste(LETTERS[sample(20, replace = TRUE)], collapse = "")
-            dir <- file.path(tempdir(), key)
-            if (!dir.exists(dir)) dir.create(dir, recursive = TRUE)
-            db_file <- file.path(dir, "data.sqlite")
-            con <- RSQLite::dbConnect(RSQLite::SQLite(), db_file)
-            on.exit(RSQLite::dbDisconnect(con))
-            RSQLite::dbWriteTable(con, name, data)
+            con <- mongolite::mongo(collection = key, url = DB_URL)
+            on.exit(con$disconnect())
+
+            con$insert(data)
 
             doc <- doc(
-                path = db_file,
+                key = key,
                 name = name
             )
             dispatch(

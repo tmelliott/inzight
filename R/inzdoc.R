@@ -9,14 +9,20 @@
 #' @md
 #' @examples
 #' doc(iris, name = "Iris Data")
-doc <- function(path, name = deparse(substitute(data))) {
-    con <- RSQLite::dbConnect(RSQLite::SQLite(), path)
-    on.exit(RSQLite::dbDisconnect(con))
+doc <- function(key, name = deparse(substitute(data))) {
+    DB_USERNAME <- Sys.getenv('INZIGHT_MONOGODB_ADMINUSERNAME')
+    DB_PASSWORD <- Sys.getenv('INZIGHT_MONOGODB_ADMINPASSWORD')
+    DB_URL <- Sys.getenv('INZIGHT_MONGODB_URL')
+
+    con <- mongolite::mongo(collection = key, url = DB_URL)
+    on.exit(con$disconnect())
+
     structure(
         list(
-            path = path,
+            key = key,
             name = name,
-            colnames = RSQLite::dbListFields(con, name)
+            colnames = colnames(con$find(limit = 1L)),
+            db_url = DB_URL
         ),
         class = "inzdoc"
     )
