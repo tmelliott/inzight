@@ -10,8 +10,8 @@
 #' @examples
 #' doc(iris, name = "Iris Data")
 doc <- function(key, name = deparse(substitute(data))) {
-    DB_USERNAME <- Sys.getenv('INZIGHT_MONOGODB_ADMINUSERNAME')
-    DB_PASSWORD <- Sys.getenv('INZIGHT_MONOGODB_ADMINPASSWORD')
+    # DB_USERNAME <- Sys.getenv('INZIGHT_MONOGODB_ADMINUSERNAME')
+    # DB_PASSWORD <- Sys.getenv('INZIGHT_MONOGODB_ADMINPASSWORD')
     DB_URL <- Sys.getenv('INZIGHT_MONGODB_URL')
 
     con <- mongolite::mongo(collection = key, url = DB_URL)
@@ -21,8 +21,7 @@ doc <- function(key, name = deparse(substitute(data))) {
         list(
             key = key,
             name = name,
-            colnames = colnames(con$find(limit = 1L)),
-            db_url = DB_URL
+            colnames = colnames(con$find(limit = 1L))
         ),
         class = "inzdoc"
     )
@@ -36,4 +35,12 @@ print.inzdoc <- function(x, ..., list_style = "- ") {
 #' @export
 dispatch.inzdoc <- function(state, action) {
 
+}
+
+#' @export
+viewDoc <- function(key, n = 10L, p = 1L) {
+    DB_URL <- Sys.getenv('INZIGHT_MONGODB_URL')
+    con <- mongolite::mongo(collection = key, url = DB_URL)
+    on.exit(con$disconnect())
+    con$find(limit = n)
 }

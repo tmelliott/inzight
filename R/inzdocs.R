@@ -66,8 +66,8 @@ dispatch.inzdocs <- function(state, action) {
     if (!class(action) == "inzaction")
         stop("Must be an action created with inzaction()")
 
-    DB_USERNAME <- Sys.getenv('INZIGHT_MONOGODB_ADMINUSERNAME')
-    DB_PASSWORD <- Sys.getenv('INZIGHT_MONOGODB_ADMINPASSWORD')
+    # DB_USERNAME <- Sys.getenv('INZIGHT_MONOGODB_ADMINUSERNAME')
+    # DB_PASSWORD <- Sys.getenv('INZIGHT_MONOGODB_ADMINPASSWORD')
     DB_URL <- Sys.getenv('INZIGHT_MONGODB_URL')
 
     switch(action$action,

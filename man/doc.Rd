@@ -4,12 +4,12 @@
 \alias{doc}
 \title{inzight document constructor}
 \usage{
-doc(path, name = deparse(substitute(data)))
+doc(key, name = deparse(substitute(data)))
 }
 \arguments{
-\item{path}{the location of the \code{SQLite} database on the server}
-
 \item{name}{the name of the dataset as displayed to users}
+
+\item{path}{the location of the \code{SQLite} database on the server}
 }
 \value{
 an \code{inzdoc} object
