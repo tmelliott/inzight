@@ -6,20 +6,39 @@
 #' @export
 #' @md
 docs <- function(...) {
+    docs <- new.env()
     x <- list(...)
-    if (length(x) == 0L)
-        x <- structure(
-            list(),
-            class = "inzdocs",
-            active = 0L
-        )
-    else {
+
+    if (length(x) == 0L) {
+        docs$.docs <- list()
+        docs$.active <- 0L
+    } else {
         x <- do.call(c, x)
         x <- x[sapply(x, length) > 0L]
-        attr(x, "active") <- length(x)
-        attr(x, "class") <- "inzdocs"
+        docs$.docs <- x
+        docs$.active <- length(x)
     }
-    x
+
+    docs$documents <- function() .docs
+    docs$active <- function() .active
+    docs$activeDoc <- function() .docs[[.active]]
+    docs$setActive <- function(index) {
+        "not sure if this works yet"
+        if (index > length(.docs)) stop('index must be a valid document')
+        if (index == 0L) stop('index must be > 0')
+        .active <- index
+    }
+    docs$count <- function() length(.docs)
+
+    attr(docs, "class") <- c("inzdocs", class(docs))
+    docs
+}
+
+as_list.inzdocs <- function(x) {
+    list(
+        docs = lapply(x$documents(), as_list),
+        active = x$active()
+    )
 }
 
 #' @export
@@ -30,20 +49,20 @@ c.inzdoc <- function(...) {
     x <- list(...)
     x <- lapply(x,
         function(z)
-            if (class(z) == "inzdocs") unclass(z)
+            if (any(class(z) == "inzdocs")) unclass(z$docs)
             else list(z)
     )
-    structure(do.call(c, x), class = "inzdocs")
+    docs <- docs(do.call(c, x))
 }
 
 #' @export
 print.inzdocs <- function(x, ...) {
-    if (length(x) == 0L || length(x[[1]]) == 0L) {
+    if (x$count() == 0L || length(x$activeDoc()) == 0L) {
         cat("empty inzight document list\n")
         return()
     }
     cat('inzight document list\n')
-    active <- attr(x, "active")
+    active <- x$active()
     if (active == 0L) lapply(x, print)
     else
         lapply(seq_along(x),

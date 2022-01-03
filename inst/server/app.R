@@ -24,11 +24,11 @@ function() {
 #* @param action an action to perform on the state
 #* @post /dispatch
 function(state, action, ...) {
-    print(match.call())
-    cat("============ STATE:\n")
-    print(state)
-    cat("============ ACTION:\n")
-    print(action)
+    # print(match.call())
+    # cat("============ STATE:\n")
+    # print(state)
+    # cat("============ ACTION:\n")
+    # print(action)
 
     # state <- jsonlite::fromJSON(state)
     state <- inzstate(

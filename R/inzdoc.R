@@ -10,30 +10,47 @@
 #' @examples
 #' doc(iris, name = "Iris Data")
 doc <- function(key, name = deparse(substitute(data))) {
-    # DB_USERNAME <- Sys.getenv('INZIGHT_MONOGODB_ADMINUSERNAME')
-    # DB_PASSWORD <- Sys.getenv('INZIGHT_MONOGODB_ADMINPASSWORD')
-    DB_URL <- Sys.getenv('INZIGHT_MONGODB_URL')
+    doc <- new.env()
+    doc$.key <- key
+    doc$.name <- name
 
-    con <- mongolite::mongo(collection = key, url = DB_URL)
-    on.exit(con$disconnect())
+    doc$key <- function() key
+    doc$name <- function() name
+    doc$data <- function(n = 0L) {
+        con <- mongolite::mongo(collection = key, url = Sys.getenv('INZIGHT_MONGODB_URL'))
+        on.exit(con$disconnect())
+        con$find(limit = n)
+    }
+    doc$colnames <- function() colnames(doc$data(1))
 
-    structure(
-        list(
-            key = key,
-            name = name,
-            colnames = colnames(con$find(limit = 1L))
-        ),
-        class = "inzdoc"
+    class(doc) <- c("inzdoc", class(doc))
+    doc
+}
+
+#' @export
+as_list.inzdoc <- function(x) {
+    list(
+        key = x$key(),
+        name = x$name(),
+        colnames = x$colnames()
     )
 }
 
 #' @export
 print.inzdoc <- function(x, ..., list_style = "- ") {
-    cat(list_style, x$name, '\n', sep = "")
+    cat(list_style, x$name(), '\n', sep = "")
 }
 
 #' @export
 dispatch.inzdoc <- function(state, action) {
+    if (missing(state)) stop("Must supply a state")
+    if (missing(action)) {
+        warning("No action supplied")
+        return(state)
+    }
+    if (!class(action) == "inzaction")
+        stop("Must be an action created with inzaction()")
+
 
 }
 
