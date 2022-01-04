@@ -5,39 +5,24 @@
 #'
 #' @export
 #' @md
-docs <- function(...) {
-    docs <- new.env()
-    x <- list(...)
+inzdocs <- function(...) {
+    documents <- list(...)
 
-    if (length(x) == 0L) {
-        docs$.docs <- list()
-        docs$.active <- 0L
+    if (length(documents) == 0L) {
+        documents <- list()
     } else {
-        x <- do.call(c, x)
-        x <- x[sapply(x, length) > 0L]
-        docs$.docs <- x
-        docs$.active <- length(x)
+        documents <- do.call(c, documents)
+        documents <- documents[sapply(documents, length) > 0L]
     }
 
-    docs$documents <- function() .docs
-    docs$active <- function() .active
-    docs$activeDoc <- function() .docs[[.active]]
-    docs$setActive <- function(index) {
-        "not sure if this works yet"
-        if (index > length(.docs)) stop('index must be a valid document')
-        if (index == 0L) stop('index must be > 0')
-        .active <- index
-    }
-    docs$count <- function() length(.docs)
-
-    attr(docs, "class") <- c("inzdocs", class(docs))
+    docs <- environment()
+    class(docs) <- "inzdocs"
     docs
 }
 
 as_list.inzdocs <- function(x) {
     list(
-        docs = lapply(x$documents(), as_list),
-        active = x$active()
+        documents = lapply(x$documents, as_list),
     )
 }
 
@@ -52,22 +37,22 @@ c.inzdoc <- function(...) {
             if (any(class(z) == "inzdocs")) unclass(z$docs)
             else list(z)
     )
-    docs <- docs(do.call(c, x))
+    docs <- inzdocs(do.call(c, x))
 }
 
 #' @export
-print.inzdocs <- function(x, ...) {
-    if (x$count() == 0L || length(x$activeDoc()) == 0L) {
+print.inzdocs <- function(x, active = 0L, ...) {
+    n <- length(x$documents)
+    if (n == 0L || length(x$documents[n]) == 0L) {
         cat("empty inzight document list\n")
         return()
     }
     cat('inzight document list\n')
-    active <- x$active()
-    if (active == 0L) lapply(x, print)
+    if (active == 0L) lapply(x$documents, print)
     else
-        lapply(seq_along(x),
+        lapply(seq_along(x$documents),
             function(i) {
-                print(x[[i]],
+                print(x$documents[[i]],
                     list_style = ifelse(i == active, "[*] ", "[ ] ")
                 )
             }
@@ -119,7 +104,7 @@ dispatch.inzdocs <- function(state, action) {
             )
         },
         'ADD_DOCUMENT' = {
-            docs(state, action$payload$doc)
+            inzdocs(state, action$payload$doc)
         },
         state
     )

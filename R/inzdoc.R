@@ -10,35 +10,30 @@
 #' @examples
 #' doc(iris, name = "Iris Data")
 doc <- function(key, name = deparse(substitute(data))) {
-    doc <- new.env()
-    doc$.key <- key
-    doc$.name <- name
-
-    doc$key <- function() key
-    doc$name <- function() name
-    doc$data <- function(n = 0L) {
+    get_data <- function(n = 0L) {
         con <- mongolite::mongo(collection = key, url = Sys.getenv('INZIGHT_MONGODB_URL'))
         on.exit(con$disconnect())
         con$find(limit = n)
     }
-    doc$colnames <- function() colnames(doc$data(1))
+    colnames <- function() colnames(doc$data(1))
 
-    class(doc) <- c("inzdoc", class(doc))
+    doc <- environment()
+    class(doc) <- "inzdoc"
     doc
 }
 
 #' @export
 as_list.inzdoc <- function(x) {
     list(
-        key = x$key(),
-        name = x$name(),
-        colnames = x$colnames()
+        key = x$key,
+        name = x$name,
+        colnames = x$colnames
     )
 }
 
 #' @export
 print.inzdoc <- function(x, ..., list_style = "- ") {
-    cat(list_style, x$name(), '\n', sep = "")
+    cat(list_style, x$name, '\n', sep = "")
 }
 
 #' @export

@@ -4,12 +4,21 @@
 \alias{inzstate}
 \title{inzight state generator}
 \usage{
-inzstate(d = docs(), c = controls())
+inzstate(
+  docs = inzdocs(),
+  active = 0L,
+  controls = inzcontrols(),
+  settings = inzsettings()
+)
 }
 \arguments{
-\item{d}{an \code{inzdocs} object}
+\item{docs}{an \code{inzdocs} object}
 
-\item{c}{an \code{inzcontrols} object}
+\item{active}{integer indicating the document currently being used}
+
+\item{controls}{an \code{inzcontrols} object}
+
+\item{settings}{an \code{inzsettings} object}
 }
 \value{
 an \code{inzstate} object

@@ -9,16 +9,10 @@
 #'
 #' @export
 #' @md
-controls <- function(v1 = NULL, v2 = NULL, g1 = NULL, g2 = NULL) {
-    structure(
-        list(
-            v1 = v1,
-            v2 = v2,
-            g1 = g1,
-            g2 = g2
-        ),
-        class = "inzcontrols"
-    )
+inzcontrols <- function(v1 = NULL, v2 = NULL, g1 = NULL, g2 = NULL) {
+    ctrls <- environment()
+    class(ctrls) <- "inzcontrols"
+    ctrls
 }
 
 #' @export
