@@ -2,26 +2,18 @@
 % Please edit documentation in R/inzight.R
 \name{inzight}
 \alias{inzight}
-\title{inzight state reducer}
+\title{inzight state management}
 \usage{
-inzight(state = inzstate(), action)
+inzight(state, action)
 }
 \arguments{
-\item{state}{an \code{inzstate} object}
+\item{state}{current application state (inzstate)}
 
-\item{action}{an \code{inzaction} object}
+\item{action}{action to apply (inzaction)}
 }
 \value{
-an \code{inzstate} object
+an inzstate
 }
 \description{
-Reduces a state based on a given action.
-}
-\examples{
-app <- inzight()
-tf <- tempfile("iris", fileext = ".csv")
-write.csv(iris, tf, row.names = FALSE, quote = FALSE)
-on.exit(unlink(tf))
-action <- inzaction('LOAD_DATA', file = tf)
-inzight(app, action)
+inzight state management
 }

@@ -2,22 +2,26 @@
 % Please edit documentation in R/inzcontrols.R
 \name{inzcontrols}
 \alias{inzcontrols}
-\title{inzight controls constructor}
+\alias{dispatch.inzcontrols}
+\title{inzight controls state}
 \usage{
-inzcontrols(v1 = NULL, v2 = NULL, g1 = NULL, g2 = NULL)
+inzcontrols(controls, variables = character())
+
+\method{dispatch}{inzcontrols}(state, action)
 }
 \arguments{
-\item{v1}{the name of the first variable}
+\item{controls}{a list of controls}
 
-\item{v2}{the name of the second variable}
-
-\item{g1}{the name of the first subset variable}
-
-\item{g2}{the name of the second subset variable}
+\item{variables}{variable names in the dataset}
 }
 \value{
-an \code{inzcontrols} object
+a inzcontrols object
 }
 \description{
-inzight controls constructor
+inzight controls state
 }
+\section{Methods (by generic)}{
+\itemize{
+\item \code{dispatch}: Dispatch method for inzcontrols
+}}
+

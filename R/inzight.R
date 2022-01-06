@@ -1,94 +1,51 @@
-#' inzight state reducer
-#'
-#' Reduces a state based on a given action.
-#'
-#' @param state an `inzstate` object
-#' @param action an `inzaction` object
-#'
-#' @return an `inzstate` object
-#' @md
+#' inzight state management
+#' @param state current application state (inzstate)
+#' @param action action to apply (inzaction)
+#' @return an inzstate
 #' @export
-#' @examples
-#' app <- inzight()
-#' tf <- tempfile("iris", fileext = ".csv")
-#' write.csv(iris, tf, row.names = FALSE, quote = FALSE)
-#' on.exit(unlink(tf))
-#' action <- inzaction('LOAD_DATA', file = tf)
-#' inzight(app, action)
-inzight <- function(state = inzstate(), action) {
+inzight <- function(state, action) {
+    if (missing(state)) return(inzstate())
     if (missing(action)) return(state)
 
-    # some (few) actions require passing information between components
-    switch(action$action,
-        'LOAD_DATA' = ,
-        'ADD_DOCUMENT' = {
-            newstate <- state
-            newstate$docs <- dispatch(state$docs, action)
-            print(newstate)
-            newstate$active <- length(newstate$documents)
-
-            # update doc, then update all other states
-            inzight(do.call(inzstate, newstate),
-                inzaction(
-                    'CHANGE_DOCUMENT',
-                    doc = newstate$docs[[newstate$active]]
-                )
-            )
-        },
-        {
-            do.call(inzstate, lapply(state, dispatch, action = action))
-        }
-    )
+    newstate <- dispatch(state, action)
+    # do some checks ... does this need to be re-actioned?
+    newstate
 }
 
-#' inzight state generator
-#'
-#' @param docs an `inzdocs` object
-#' @param active integer indicating the document currently being used
-#' @param controls an `inzcontrols` object
-#' @param settings an `inzsettings` object
-#'
-#' @return an `inzstate` object
-#' @export
-#' @md
-inzstate <- function(docs = inzdocs(),
-                     active = 0L,
-                     controls = inzcontrols(),
-                     settings = inzsettings()
-                     ) {
-
-    self <- environment()
-    class(self) <- "inzstate"
-    self
-}
-
-#' @export
-as_list.inzstate <- function(x) {
-    list(
-        docs = as_list(x$docs),
-        active = x$active,
-        controls = as_list(x$controls),
-        settings = as_list(x$settings)
-    )
-}
-
-#' @export
-print.inzstate <- function(x, ...) {
-    print(x$documents)
-    cat("\n")
-    print(x$controls)
-}
-
+#' inzight action dispatch method
+#' @param state appliation state (inzstate)
+#' @param action action to apply (inzaction)
+#' @return an inzstate
 #' @export
 dispatch <- function(state, action) UseMethod("dispatch", state)
 
+#' @describeIn dispatch Default method
 #' @export
-as_list <- function(x) UseMethod("as_list", x)
+dispatch.default <- function(state, action) state
+
+#' inzight action constructor
+#' @param action the name of the action
+#' @param ... action payload
+#' @return an inzaction object
+#' @export
+inzaction <- function(action, ...) {
+    structure(
+        list(action = action, payload = list(...)),
+        class = "inzaction"
+    )
+}
 
 #' @export
-as_list.default <- function(x) {
-    if (!is.list(x)) return(x)
-    unclass(
-        lapply(x, as_list)
-    )
+print.inzaction <- function(x, ...) {
+    cli::cli_text("Action: {.strong {x$action}}")
+    cli::cli_text("Payload contents:")
+    cli::cli_ul()
+    lapply(names(x$payload), \(y) {
+        z <- x$payload[[y]]
+        if (!is.character(z)) {
+            if (is.numeric(z)) z <- as.character(z)
+            else z <- class(z)
+        }
+        cli::cli_li("{y}: {.emph {z}}")
+    })
 }

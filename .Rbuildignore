@@ -1,3 +1,4 @@
 ^inzight\.Rproj$
 ^\.Rproj\.user$
 ^Dockerfile$
+^LICENSE\.md$

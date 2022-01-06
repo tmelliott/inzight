@@ -2,16 +2,24 @@
 % Please edit documentation in R/inzsettings.R
 \name{inzsettings}
 \alias{inzsettings}
-\title{inzight settings constructor}
+\alias{dispatch.inzsettings}
+\title{inzight settings state}
 \usage{
-inzsettings(...)
+inzsettings(settings = list())
+
+\method{dispatch}{inzsettings}(state, action)
 }
 \arguments{
-\item{...}{settings to be specified}
+\item{settings}{a list of settings}
 }
 \value{
-an \code{inzsettings} object
+an inzsettings object
 }
 \description{
-inzight settings constructor
+inzight settings state
 }
+\section{Methods (by generic)}{
+\itemize{
+\item \code{dispatch}: Dispatch method for inzsettings
+}}
+
