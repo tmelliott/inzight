@@ -10,9 +10,9 @@
 #' @export
 #' @md
 inzcontrols <- function(v1 = NULL, v2 = NULL, g1 = NULL, g2 = NULL) {
-    ctrls <- environment()
-    class(ctrls) <- "inzcontrols"
-    ctrls
+    self <- environment()
+    class(self) <- "inzcontrols"
+    self
 }
 
 #' @export

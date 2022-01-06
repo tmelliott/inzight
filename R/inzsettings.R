@@ -24,9 +24,9 @@ inzsettings <- function(...) {
     rm(new_settings)
     rm(mismatch)
 
-    set <- environment()
-    class(set) <- "inzsettings"
-    set
+    self <- environment()
+    class(self) <- "inzsettings"
+    self
 }
 
 #' Default settings list

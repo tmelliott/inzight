@@ -18,12 +18,26 @@
 inzight <- function(state = inzstate(), action) {
     if (missing(action)) return(state)
 
-    # switch(action$action,
-    #     'LOAD_DATA'
-    # )
-    inzstate(
-        d = dispatch(state$docs, action),
-        c = dispatch(state$controls, action)
+    # some (few) actions require passing information between components
+    switch(action$action,
+        'LOAD_DATA' = ,
+        'ADD_DOCUMENT' = {
+            newstate <- state
+            newstate$docs <- dispatch(state$docs, action)
+            print(newstate)
+            newstate$active <- length(newstate$documents)
+
+            # update doc, then update all other states
+            inzight(do.call(inzstate, newstate),
+                inzaction(
+                    'CHANGE_DOCUMENT',
+                    doc = newstate$docs[[newstate$active]]
+                )
+            )
+        },
+        {
+            do.call(inzstate, lapply(state, dispatch, action = action))
+        }
     )
 }
 
@@ -43,9 +57,9 @@ inzstate <- function(docs = inzdocs(),
                      settings = inzsettings()
                      ) {
 
-    state <- environment()
-    class(state) <- "inzstate"
-    state
+    self <- environment()
+    class(self) <- "inzstate"
+    self
 }
 
 #' @export
@@ -60,7 +74,7 @@ as_list.inzstate <- function(x) {
 
 #' @export
 print.inzstate <- function(x, ...) {
-    print(x$docs)
+    print(x$documents)
     cat("\n")
     print(x$controls)
 }

@@ -8,8 +8,8 @@
 #' @export
 #' @md
 #' @examples
-#' doc(iris, name = "Iris Data")
-doc <- function(key, name = deparse(substitute(data))) {
+#' inzdoc(iris, name = "Iris Data")
+inzdoc <- function(key, name = deparse(substitute(data))) {
     get_data <- function(n = 0L) {
         con <- mongolite::mongo(collection = key, url = Sys.getenv('INZIGHT_MONGODB_URL'))
         on.exit(con$disconnect())
@@ -17,9 +17,9 @@ doc <- function(key, name = deparse(substitute(data))) {
     }
     colnames <- function() colnames(doc$data(1))
 
-    doc <- environment()
-    class(doc) <- "inzdoc"
-    doc
+    self <- environment()
+    class(self) <- "inzdoc"
+    self
 }
 
 #' @export

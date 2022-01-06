@@ -12,17 +12,17 @@ inzdocs <- function(...) {
         documents <- list()
     } else {
         documents <- do.call(c, documents)
-        documents <- documents[sapply(documents, length) > 0L]
+        #documents <- documents[sapply(documents, \(d) d$key) != ""]
     }
 
-    docs <- environment()
-    class(docs) <- "inzdocs"
-    docs
+    self <- environment()
+    class(self) <- "inzdocs"
+    self
 }
 
 as_list.inzdocs <- function(x) {
     list(
-        documents = lapply(x$documents, as_list),
+        documents = lapply(x$documents, as_list)
     )
 }
 
@@ -33,17 +33,19 @@ c.inzdocs <- function(...) c.inzdoc(...)
 c.inzdoc <- function(...) {
     x <- list(...)
     x <- lapply(x,
-        function(z)
-            if (any(class(z) == "inzdocs")) unclass(z$docs)
+        function(z) {
+            if (any(class(z) == "inzdocs")) z$documents
             else list(z)
+        }
     )
-    docs <- inzdocs(do.call(c, x))
+    x <- x[sapply(x, \(d) d$key) != ""]
+    inzdocs(do.call(c, x))
 }
 
 #' @export
 print.inzdocs <- function(x, active = 0L, ...) {
     n <- length(x$documents)
-    if (n == 0L || length(x$documents[n]) == 0L) {
+    if (n == 0L || x$documents[[n]]$key == "") {
         cat("empty inzight document list\n")
         return()
     }
@@ -91,7 +93,7 @@ dispatch.inzdocs <- function(state, action) {
 
             con$insert(data)
 
-            doc <- doc(
+            doc <- inzdoc(
                 key = key,
                 name = name
             )
