@@ -5,7 +5,7 @@
 \alias{dispatch.inzcontrol}
 \title{inzight control state}
 \usage{
-inzcontrol(name, options, value = 0L, slider = NULL)
+inzcontrol(name, options, value = "", slider = NULL)
 
 \method{dispatch}{inzcontrol}(state, action)
 }

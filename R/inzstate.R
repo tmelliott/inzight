@@ -57,12 +57,14 @@ dispatch.inzstate <- function(state, action) {
             if (state$documents$active == newstate$documents$active) {
                 # updating document
                 action <- inzaction("UPDATE_DOC",
-                    data = newstate$documents$docs[[newstate$documents$active]]
+                    data = newstate$documents$docs[[newstate$documents$active]],
+                    settings = newstate$settings
                 )
             } else {
                 # switching to a new document
                 action <- inzaction("CHANGE_DOC",
-                    data = newstate$documents$docs[[newstate$documents$active]]
+                    data = newstate$documents$docs[[newstate$documents$active]],
+                    settings = newstate$settings
                 )
             }
 
@@ -71,7 +73,8 @@ dispatch.inzstate <- function(state, action) {
 
         if (!check["settings"]) {
             action <- inzaction("UPDATE_SETTINGS",
-                settings = list()
+                data = newstate$documents$docs[[newstate$documents$active]],
+                settings = newstate$settings
             )
             newstate <- do.call(inzstate, lapply(newstate, dispatch, action = action))
         }

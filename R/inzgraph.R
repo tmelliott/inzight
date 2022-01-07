@@ -23,6 +23,7 @@ print.inzgraph <- function(x, ...) {
 
 #' @describeIn inzgraph Dispatch method for inzgraph
 #' @export
+#' @importFrom iNZightPlots inzplot iNZightPlot
 dispatch.inzgraph <- function(state, action) {
     cli::cli_h1("Dispatching action for inzgraph")
     cat("\n")
@@ -33,6 +34,27 @@ dispatch.inzgraph <- function(state, action) {
         'CHANGE_DOC' = ,
         'UPDATE_SETTINGS' = {
             cli::cli_h2('UPDATING PLOT')
+
+            ctrls <- action$payload$data$controls$controls
+            if (ctrls$v1$value == "") {
+                cli::cli_alert_warning("Nothing to plot")
+                return(state)
+            }
+
+            if (ctrls$v2$value == "") {
+                fmla <- glue::glue("~ {ctrls$v1$value}")
+            } else {
+                fmla <- glue::glue("{ctrls$v1$value} ~ {ctrls$v2$value}")
+            }
+            fmla <- eval(parse(text = fmla))
+
+            d <- action$payload$data$data$get()
+            png(filename = state$path, width = state$dimensions[1], height = state$dimensions[2])
+            on.exit(dev.off())
+            iNZightPlots::inzplot(fmla, data = d)
+
+            cli::cli_alert_info("Plot saved to {.strong {state$path}}")
+
             state
         },
         state

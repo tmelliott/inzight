@@ -16,7 +16,7 @@ inzdocument(
 \method{dispatch}{inzdocument}(state, action)
 }
 \arguments{
-\item{data}{a data.frame}
+\item{data}{a data.frame or a data_store}
 
 \item{name}{R object name}
 

@@ -38,7 +38,18 @@ dispatch.inzdocuments <- function(state, action) {
         'LOAD_DATA' = {
             cli::cli_h2('LOADING DATA')
             documents <- state$docs
-            doc <- inzdocument(action$payload$data, action$payload$name)
+
+            args <- action$payload
+            args <- args[!names(args) %in% c("name", "label")]
+            data <- do.call(iNZightTools::smart_read, args)
+
+            name <- ifelse(is.null(action$payload$name),
+                basename(tools::file_path_sans_ext(action$payload$file)),
+                action$payload$name
+            )
+            label <- ifelse(is.null(action$payload$label), name, action$payload$label)
+
+            doc <- inzdocument(data = data, name = name, label = label)
             documents <- c(documents, list(doc))
             inzdocuments(documents)
         },
@@ -53,7 +64,7 @@ dispatch.inzdocuments <- function(state, action) {
 }
 
 #' inzight document state
-#' @param data a data.frame
+#' @param data a data.frame or a data_store
 #' @param name R object name
 #' @param label human readable name (spaces etc OK)
 #' @param settings document specific settings (inzsettings)
@@ -64,8 +75,16 @@ inzdocument <- function(data,
                         settings = inzsettings(),
                         controls = inzcontrols(variables = names(data))
                         ) {
+    if (inherits(data, "data_store")) {
+        store <- data
+    } else {
+        # store data somewhere
+        file_path <- tempfile(pattern = name)
+        store <- data_store(file_path, data)
+    }
+
     self <- list(
-        data = data,
+        data = store,
         name = name,
         label = label,
         settings = settings,
@@ -79,7 +98,7 @@ inzdocument <- function(data,
 print.inzdocument <- function(x, ...) {
     cli::cli_h2("{x$label} ({x$name})\n")
 
-    print(head(x$data))
+    print(head(x$data$get()))
 
     cat("\n")
     cli::cli_h3("Controls")
@@ -97,4 +116,30 @@ dispatch.inzdocument <- function(state, action) {
     switch(action$action,
         do.call(inzdocument, lapply(state, dispatch, action = action))
     )
+}
+
+#' Data Store class generator
+#' @param x a data store constructor
+#' @param data data to be stored (a data.frame)
+#' @return a data_store object
+#' @export
+data_store <- function(x, data) UseMethod("data_store", x)
+
+#' @describeIn data_store Default method for storing at a local path
+#' @export
+data_store.default <- function(x, data) {
+    path <- paste(x, "rds", sep = ".")
+    cli::cli_alert_info("Storing data in {.strong {path}}")
+    saveRDS(data, file = path)
+
+    self <- list(
+        path = path,
+        get = function() readRDS(path),
+        close = function() {
+            unlink(path)
+            cli::cli_alert_info("Deleted {.strong {path}}")
+        }
+    )
+    class(self) <- c("file_data_store", "data_store")
+    self
 }
