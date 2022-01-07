@@ -20,7 +20,7 @@ cat << EOF > action.json
 {
 	"action": "SET_V1",
 	"payload": {
-		"value": "Sepal.Length"
+		"value": "height"
 	}
 }
 EOF

@@ -49,8 +49,10 @@ dispatch.inzgraph <- function(state, action) {
             fmla <- eval(parse(text = fmla))
 
             d <- action$payload$data$data$get()
+
             png(filename = state$path, width = state$dimensions[1], height = state$dimensions[2])
             on.exit(dev.off())
+
             iNZightPlots::inzplot(fmla, data = d)
 
             cli::cli_alert_info("Plot saved to {.strong {state$path}}")

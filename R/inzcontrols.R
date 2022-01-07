@@ -14,13 +14,7 @@ inzcontrols <- function(controls, variables = character()) {
     }
 
     controls <- lapply(controls, \(x) {
-        if (!inherits(x, "inzcontrol")) {
-            x <- unclass(x)
-            x$name <- x$name[[1]]
-            x$options <- x$options[[1]]
-            x$value <- x$value[[1]]
-            do.call(inzcontrol, x)
-        } else x
+        if (!inherits(x, "inzcontrol")) do.call(inzcontrol, x) else x
     })
 
     self <- list(

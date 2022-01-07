@@ -8,9 +8,12 @@ inzstate <- function(documents = inzdocuments(),
                      settings = inzsettings(),
                      graph = inzgraph()
                      ) {
-    if (!inherits(documents, "inzdocuments")) documents <- do.call(inzdocuments, documents)
+    if (!inherits(documents, "inzdocuments")) {
+        documents <- do.call(inzdocuments, documents)
+    }
     if (!inherits(settings, "inzsettings")) settings <- do.call(inzsettings, settings)
     if (!inherits(graph, "inzgraph")) graph <- do.call(inzgraph, graph)
+
     self <- list(
         documents = documents,
         settings = settings,

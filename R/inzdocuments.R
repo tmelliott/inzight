@@ -7,13 +7,10 @@ inzdocuments <- function(docs = list(),
                          active = length(docs)
                          ) {
     docs <- lapply(as.list(docs), \(x) {
-        if (!inherits(x, "inzdocument")) {
-            x$data <- x$data[[1]]
-            x$name <- x$name[[1]]
-            x$label <- x$label[[1]]
-            do.call(inzdocument, x)
-        } else x
+        if (!inherits(x, "inzdocument")) do.call(inzdocument, x) else x
     })
+    if (is.list(active)) active <- active[[1]]
+
     self <- list(
         docs = docs,
         active = active
@@ -50,6 +47,7 @@ dispatch.inzdocuments <- function(state, action) {
             args <- action$payload
             args <- args[!names(args) %in% c("name", "label")]
             data <- do.call(iNZightTools::smart_read, args)
+            print(head(data))
 
             name <- ifelse(is.null(action$payload$name),
                 basename(tools::file_path_sans_ext(action$payload$file)),
@@ -83,7 +81,10 @@ inzdocument <- function(data,
                         settings = inzsettings(),
                         controls = inzcontrols(variables = names(data))
                         ) {
-    print(match.call())
+    if (is.list(data) && !is.data.frame(data)) data <- data[[1]]
+    if (is.list(name)) name <- name[[1]]
+    if (is.list(label)) lable <- label[[1]]
+
     if (inherits(data, "data_store")) {
         store <- data
     } else if (is.data.frame(data)) {

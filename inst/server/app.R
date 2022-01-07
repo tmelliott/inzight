@@ -29,9 +29,6 @@ function(state, action, ...) {
     state <- do.call(inzstate, state)
     action <- do.call(inzaction, action)
 
-    print(state)
-    print(action)
-
     as_list(inzight(state, action))
 }
 
