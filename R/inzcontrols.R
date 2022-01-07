@@ -13,6 +13,16 @@ inzcontrols <- function(controls, variables = character()) {
         )
     }
 
+    controls <- lapply(controls, \(x) {
+        if (!inherits(x, "inzcontrol")) {
+            x <- unclass(x)
+            x$name <- x$name[[1]]
+            x$options <- x$options[[1]]
+            x$value <- x$value[[1]]
+            do.call(inzcontrol, x)
+        } else x
+    })
+
     self <- list(
         controls = controls,
         variables = variables
@@ -52,7 +62,7 @@ dispatch.inzcontrols <- function(state, action) {
             used_vars <- sapply(newstate$controls, \(x) x$value)
             used_vars <- as.character(used_vars[used_vars != ""])
             available_vars <- newstate$variable[!newstate$variables %in% used_vars]
-            action <- inzaction("UPDATE_OPTIONS", variables = available_vars)
+            action <- inzaction("UPDATE_OPTIONS", list(variables = available_vars))
             ctrls <- lapply(newstate$controls, dispatch, action = action)
 
             inzcontrols(ctrls, state$variables)

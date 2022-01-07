@@ -24,20 +24,13 @@ function() {
 #* @param action an action to perform on the state
 #* @post /dispatch
 function(state, action, ...) {
-    # print(match.call())
-    # cat("============ STATE:\n")
-    # print(state)
-    # cat("============ ACTION:\n")
-    # print(action)
+    state <- as_list(state)
+    action <- as_list(action)
+    state <- do.call(inzstate, state)
+    action <- do.call(inzaction, action)
 
-    # state <- jsonlite::fromJSON(state)
-    state <- inzstate(
-        d = docs(state$docs),
-        c = do.call(controls, state$controls)
-    )
-
-    # action <- jsonlite::fromJSON(action)
-    class(action) <- "inzaction"
+    print(state)
+    print(action)
 
     as_list(inzight(state, action))
 }

@@ -4,12 +4,12 @@
 \alias{inzaction}
 \title{inzight action constructor}
 \usage{
-inzaction(action, ...)
+inzaction(action, payload)
 }
 \arguments{
 \item{action}{the name of the action}
 
-\item{...}{action payload}
+\item{payload}{action payload}
 }
 \value{
 an inzaction object

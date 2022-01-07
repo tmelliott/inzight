@@ -13,4 +13,18 @@ EOF
 
 curl -X POST localhost:4567/dispatch \
     -F "state=$(cat state0.json)" \
+    -F "action=$(cat action.json)" | jq . > 'state1.json'
+
+# create first graph
+cat << EOF > action.json
+{
+	"action": "SET_V1",
+	"payload": {
+		"value": "Sepal.Length"
+	}
+}
+EOF
+
+curl -X POST localhost:4567/dispatch \
+    -F "state=$(cat state1.json)" \
     -F "action=$(cat action.json)" | jq .

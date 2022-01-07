@@ -25,12 +25,12 @@ dispatch.default <- function(state, action) state
 
 #' inzight action constructor
 #' @param action the name of the action
-#' @param ... action payload
+#' @param payload action payload
 #' @return an inzaction object
 #' @export
-inzaction <- function(action, ...) {
+inzaction <- function(action, payload) {
     structure(
-        list(action = action, payload = list(...)),
+        list(action = action, payload = payload),
         class = "inzaction"
     )
 }
@@ -48,4 +48,19 @@ print.inzaction <- function(x, ...) {
         }
         cli::cli_li("{y}: {.emph {z}}")
     })
+}
+
+#' Convert to a list
+#' @param x an object to convert to list
+#' @return a list
+#' @export
+as_list <- function(x) UseMethod("as_list", x)
+
+#' @describeIn as_list Default method
+#' @export
+as_list.default <- function(x) {
+    if (!is.list(x)) return(x)
+    unclass(
+        lapply(x, as_list)
+    )
 }

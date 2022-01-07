@@ -8,6 +8,9 @@ inzstate <- function(documents = inzdocuments(),
                      settings = inzsettings(),
                      graph = inzgraph()
                      ) {
+    if (!inherits(documents, "inzdocuments")) documents <- do.call(inzdocuments, documents)
+    if (!inherits(settings, "inzsettings")) settings <- do.call(inzsettings, settings)
+    if (!inherits(graph, "inzgraph")) graph <- do.call(inzgraph, graph)
     self <- list(
         documents = documents,
         settings = settings,
@@ -57,14 +60,18 @@ dispatch.inzstate <- function(state, action) {
             if (state$documents$active == newstate$documents$active) {
                 # updating document
                 action <- inzaction("UPDATE_DOC",
-                    data = newstate$documents$docs[[newstate$documents$active]],
-                    settings = newstate$settings
+                    list(
+                        data = newstate$documents$docs[[newstate$documents$active]],
+                        settings = newstate$settings
+                    )
                 )
             } else {
                 # switching to a new document
                 action <- inzaction("CHANGE_DOC",
-                    data = newstate$documents$docs[[newstate$documents$active]],
-                    settings = newstate$settings
+                    list(
+                        data = newstate$documents$docs[[newstate$documents$active]],
+                        settings = newstate$settings
+                    )
                 )
             }
 
@@ -73,8 +80,10 @@ dispatch.inzstate <- function(state, action) {
 
         if (!check["settings"]) {
             action <- inzaction("UPDATE_SETTINGS",
-                data = newstate$documents$docs[[newstate$documents$active]],
-                settings = newstate$settings
+                list(
+                    data = newstate$documents$docs[[newstate$documents$active]],
+                    settings = newstate$settings
+                )
             )
             newstate <- do.call(inzstate, lapply(newstate, dispatch, action = action))
         }

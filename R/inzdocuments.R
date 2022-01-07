@@ -6,6 +6,14 @@
 inzdocuments <- function(docs = list(),
                          active = length(docs)
                          ) {
+    docs <- lapply(as.list(docs), \(x) {
+        if (!inherits(x, "inzdocument")) {
+            x$data <- x$data[[1]]
+            x$name <- x$name[[1]]
+            x$label <- x$label[[1]]
+            do.call(inzdocument, x)
+        } else x
+    })
     self <- list(
         docs = docs,
         active = active
@@ -75,13 +83,19 @@ inzdocument <- function(data,
                         settings = inzsettings(),
                         controls = inzcontrols(variables = names(data))
                         ) {
+    print(match.call())
     if (inherits(data, "data_store")) {
         store <- data
-    } else {
+    } else if (is.data.frame(data)) {
         # store data somewhere
         file_path <- tempfile(pattern = name)
         store <- data_store(file_path, data)
+    } else {
+        store <- data_store(data)
     }
+
+    if (!inherits(settings, "inzsettings")) settings <- do.call(inzsettings, settings)
+    if (!inherits(controls, "inzcontrols")) controls <- do.call(inzcontrols, unclass(controls))
 
     self <- list(
         data = store,
@@ -92,6 +106,17 @@ inzdocument <- function(data,
     )
     class(self) <- "inzdocument"
     self
+}
+
+#' @export
+as_list.inzdocument <- function(x) {
+    list(
+        data = x$data$path,
+        name = x$name,
+        label = x$label,
+        settings = as_list(x$settings),
+        controls = as_list(x$controls)
+    )
 }
 
 #' @export
@@ -128,9 +153,13 @@ data_store <- function(x, data) UseMethod("data_store", x)
 #' @describeIn data_store Default method for storing at a local path
 #' @export
 data_store.default <- function(x, data) {
-    path <- paste(x, "rds", sep = ".")
-    cli::cli_alert_info("Storing data in {.strong {path}}")
-    saveRDS(data, file = path)
+    if (!missing(data)) {
+        path <- paste(x, "rds", sep = ".")
+        cli::cli_alert_info("Storing data in {.strong {path}}")
+        saveRDS(data, file = path)
+    } else {
+        path <- x
+    }
 
     self <- list(
         path = path,
@@ -143,3 +172,6 @@ data_store.default <- function(x, data) {
     class(self) <- c("file_data_store", "data_store")
     self
 }
+
+#' @export
+as_list.data_store <- function(x) list(data = x$path)
