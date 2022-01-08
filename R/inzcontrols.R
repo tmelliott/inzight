@@ -13,9 +13,16 @@ inzcontrols <- function(controls, variables = character()) {
         )
     }
 
+    if (is.null(names(controls))) {
+        controls <- lapply(controls[[1]], \(c) c[[1]])
+    }
     controls <- lapply(controls, \(x) {
-        if (!inherits(x, "inzcontrol")) do.call(inzcontrol, x) else x
+        if (!inherits(x, "inzcontrol")) {
+            do.call(inzcontrol, x)
+        } else x
     })
+
+    if (is.list(variables)) variables <- variables[[1]]
 
     self <- list(
         controls = controls,
@@ -71,6 +78,9 @@ dispatch.inzcontrols <- function(state, action) {
 #' @param value the chosen value
 #' @param slider optional, a slider object associated with the control (inzslider)
 inzcontrol <- function(name, options, value = "", slider = NULL) {
+    if (is.list(name)) name <- name[[1]]
+    if (is.list(options)) options <- options[[1]]
+    if (is.list(value)) value <- value[[1]]
     self <- list(
         name = name,
         options = options,
@@ -79,6 +89,12 @@ inzcontrol <- function(name, options, value = "", slider = NULL) {
     )
     class(self) <- "inzcontrol"
     self
+}
+
+as_list.inzcontrol <- function(x) {
+    as_list(unclass(x))
+    # if (length(x) == 1L)
+    # )
 }
 
 #' @export

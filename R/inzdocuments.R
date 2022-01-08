@@ -96,7 +96,10 @@ inzdocument <- function(data,
     }
 
     if (!inherits(settings, "inzsettings")) settings <- do.call(inzsettings, settings)
-    if (!inherits(controls, "inzcontrols")) controls <- do.call(inzcontrols, unclass(controls))
+    if (!inherits(controls, "inzcontrols")) {
+        if (is.null(names(controls))) controls <- controls[[1]]
+        controls <- do.call(inzcontrols, unclass(controls))
+    }
 
     self <- list(
         data = store,

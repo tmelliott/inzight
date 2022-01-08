@@ -60,7 +60,7 @@ as_list <- function(x) UseMethod("as_list", x)
 #' @export
 as_list.default <- function(x) {
     if (is.data.frame(x)) {
-        return(lapply(seq_len(nrow(x)), \(i) unclass(x[i])))
+        return(lapply(seq_len(nrow(x)), \(i) as_list(unclass(x[i,]))))
     }
     if (!is.list(x)) return(x)
     unclass(

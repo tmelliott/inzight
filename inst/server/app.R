@@ -40,3 +40,11 @@ function(state, action, ...) {
 function(key, page = 10, pageSize = 10L) {
     as_list(viewDoc(key, n = pageSize, p = page))
 }
+
+#* Get image
+#* @param path
+#* @serializer contentType list(type="image/png")
+#* @get /image
+function(path) {
+    readBin(path, "raw", n = file.info(path)$size)
+}
