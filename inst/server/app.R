@@ -43,8 +43,9 @@ function(key, page = 10, pageSize = 10L) {
 
 #* Get image
 #* @param path
-#* @serializer contentType list(type="image/png")
 #* @get /image
 function(path) {
-    readBin(path, "raw", n = file.info(path)$size)
+    if (!file.exists(path)) return("")
+    x <- RCurl::base64Encode(readBin(path, "raw", n = file.info(path)$size), "txt")
+    unclass(x)
 }
