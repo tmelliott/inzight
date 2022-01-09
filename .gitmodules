@@ -1,0 +1,3 @@
+[submodule "inst/app"]
+	path = inst/app
+	url = git@github.com:tmelliott/inzight-client
