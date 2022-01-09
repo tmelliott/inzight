@@ -75,3 +75,12 @@ curl -X POST localhost:4567/dispatch \
 ```
 
 The data is stored on the server and only necessary bits will be passed to the UI (e.g., to view a spreadsheet). The session will (eventually) generate a user key (which may be associated with, for example, a log-in) allowing them---and only them---to view their data.
+
+
+## Docker
+
+Alternatively, you can build and run the entire app with docker-compose (prefixed with `sudo`, in most cases):
+```bash
+COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose build
+docker-compose up
+```
