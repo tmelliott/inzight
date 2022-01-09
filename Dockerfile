@@ -2,7 +2,7 @@ FROM rocker/r-bspm:20.04
 
 LABEL maintainer="Tom Elliott <tom.elliott@auckland.ac.nz>"
 
-RUN install.r remotes plumber mongolite iNZightTools
+RUN install.r remotes plumber mongolite iNZightTools iNZightPlots
 
 ADD . /srv/inzight/
 WORKDIR /srv/inzight

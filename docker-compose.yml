@@ -1,29 +1,13 @@
 version: "3.9"
 services:
-  mongo:
-    ports:
-      - 27017:27017
-    image: mongo
-    restart: always
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: inzight
-      MONGO_INITDB_ROOT_PASSWORD: inzightvit
-
-  mongo-express:
-    image: mongo-express
-    restart: always
-    ports:
-      - 8081:8081
-    environment:
-      ME_CONFIG_MONGODB_ADMINUSERNAME: inzight
-      ME_CONFIG_MONGODB_ADMINPASSWORD: inzightvit
-      ME_CONFIG_MONGODB_URL: mongodb://inzight:inzightvit@mongo:27017/
-
   server:
     build: .
     ports:
-      - "4567:4567"
+      - 4567:4567
+
+  client:
+    build: inst/app
+    ports:
+      - 3000:3000
     environment:
-      INZIGHT_MONGODB_ADMINUSERNAME: inzight
-      INZIGHT_MONGODB_ADMINPASSWORD: inzightvit
-      INZIGHT_MONGODB_URL: mongodb://inzight:inzightvit@mongo:27017/
+      - SERVER_URL=http://server:4567
