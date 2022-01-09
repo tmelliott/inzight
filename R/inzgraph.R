@@ -46,6 +46,14 @@ dispatch.inzgraph <- function(state, action) {
             } else {
                 fmla <- glue::glue("{ctrls$v1$value} ~ {ctrls$v2$value}")
             }
+
+            if (ctrls$g1$value != "") {
+                fmla <- glue::glue("{fmla} | {ctrls$g1$value}")
+                if (ctrls$g2$value != "") {
+                    fmla <- glue::glue("{fmla} + {ctrls$g2$value}")
+                }
+            }
+
             fmla <- eval(parse(text = fmla))
 
             d <- action$payload$data$data$get()

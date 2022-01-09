@@ -6,8 +6,9 @@ services:
       - 4567:4567
 
   client:
-    build: inst/app
+    build:
+      context: inst/app
+      args:
+        NEXT_PUBLIC_SERVER_URL: http://server:4567
     ports:
       - 3000:3000
-    environment:
-      - SERVER_URL=http://server:4567
